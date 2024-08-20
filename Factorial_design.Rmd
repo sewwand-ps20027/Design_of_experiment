@@ -1,0 +1,34 @@
+---
+title: "Factorial_design"
+author: "W.H.Sewwandi(PS/2020/027)"
+date: "2024-08-18"
+output: html_document
+---
+
+```{r}
+#Factorial Design
+y <- c( 130,74,155,180,150,159, 188, 126, 138, 168, 110, 160, 34, 80, 40, 
+75, 136, 106, 122, 115,174, 150, 120, 139, 20, 82, 70, 58, 25, 58, 70, 
+45, 96, 82, 104, 60)
+type <- gl(3, 4,36)
+temp<-gl(3,12,36,labels = c("15","70","125"))
+data.frame(y=y,type=type,temp=temp)
+
+#One way anova test
+life_anova<-aov(y~ type*temp)
+summary(life_anova)
+
+#We can conclude that interaction of material type and temperature is significant.And also both main effects are significant.
+
+interaction.plot(temp,type,y)
+interaction.plot(type,temp,y)
+
+t<-TukeyHSD(life_anova)
+t
+plot(t)
+
+
+par(mfrow=c(2,2))
+plot(life_anova)
+```
+
