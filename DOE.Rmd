@@ -1,0 +1,137 @@
+---
+title: "DOE"
+author: "W.H.Sewwandi(PS/2020/027)"
+date: "2024-08-16"
+output: html_document
+---
+
+```{r}
+#Treatments without blocks
+#Model is y_ij=overall mean+i th treatment effect+e_ij
+
+#hypothesis tests
+#Ho:The model is not significant.
+#H1:The model is significant
+
+#Create data frame
+df<-data.frame(Column1=c(7,7,15,11,9),column2=c(12,17,12,18,18),column3=c(14,19,19,18,18),column4=c(19,25,22,19,23),column5=c(7,10,11,15,11))
+df
+
+#Provide names for the columns
+names(df)=c("15","20","25","30","35")
+df
+
+r<-c(t(as.matrix(df)))
+r
+
+f<-c("15","20","25","30","35")    #treatments levels
+k<-5
+n<-5
+#treatment matching
+tm<-gl(n,1,n*k,factor(f))
+tm
+
+av<-aov(r~ tm)
+summary(av)
+#According to the summary we can reject Ho since p value is less than 0.05 Therefore we can conclude that the model is significant at 5% significance level.
+
+plot(av)
+
+
+
+```
+
+
+```{r}
+#Treatment with blocks
+#Model is y_ij=overall mean+i th treatment effect+jth block effect+e_ij
+
+#Hypothesis test
+#For treatments
+#Ho:J1=J2=J3=J4=0
+#H1:Ji not equal to zero at least one i
+
+#For blocks
+#Ho:b1=b2=b3=b4=b5=b6=0
+#H1:bj not equal to zero at least one j
+
+df1<-data.frame(T_8500=c(90.3,89.2,98.2,93.9,87.4,97.9)
+                ,T_8700=c(92.5,89.5,90.6,94.7,87,95.8),T_8900=c(85.5,90.8,89.6,86.2,88,93.4),T_9100=c(82.5,89.5,85.6,87.4,78.9,90.7))
+df1
+
+r<-c(t(as.matrix(df1)))
+r
+
+#For treatments
+f=c("T_8500","T_8700","T_8900","T_9100") # Treatment levels
+a=4    #No of treatments
+b=6    #No of blocks
+tm<-gl(4,1,a*b,as.factor(f))
+tm
+
+#For blocks
+bl<-gl(b,a,a*b)
+bl
+
+av1<-aov(r~tm+bl)
+summary(av1)
+
+#Here we can see p value of treatments is less than 0.05 Then we can conclude that treatments differ significantly at 5% significance level.
+#Also we can conclude that blocks differ significantly at 5% significance level.
+
+sum(av$residuals^2)   #sum of squares of residuals
+sum(r)      # Sum of all observations
+N=a*b        #Count of observations
+N
+
+plot(av1)
+
+
+```
+
+
+```{r}
+#Latin square(two or more than blocks)
+
+#Model is y_ij=overall mean+i th row effect+k th column effect+j th treatment effect+e_ij
+
+#Hypothesis test
+#For treatments
+#Ho:J1=J2=J3=J4=J5=0
+#H1:Jj not equal to zero at least one j
+
+#For row effect
+#Ho:b1=b2=b3=b4=b5=0
+#H1:bi not equal to zero at least one i
+
+#For column effect
+#Ho:r1=r2=r3=r4=r5=0
+#H1:rk not equal to zero at least one k
+
+y<-c(24,20,19,24,24,17,24,30,27,36,18,38,26,27,21,26,31,26,23,22,22,30,20,29,31)
+operators<-gl(5,1,25)
+batch<-gl(5,5)
+form<-as.factor(c("A","B","C","D","E","B","C","D","E","A","C","D","E","A","B","D","E","A","B","C","E","A","B","C","D"))
+operators
+batch
+form
+
+d1<-data.frame(batch,operators,form,y)
+d1
+
+par(mfrow=c(2,2))
+plot(y~operators+batch+form)
+
+#Considering differences  form difference is high and difference of batches is low and operators have medium difference.
+
+matrix(d1$y,5,5)
+matrix(d1$form,5,5)
+
+av2<-aov(y~operators+batch+form,d1)
+summary(av2)
+
+#According to the summary operators and forms are significantly difference at 5% significance level.
+
+```
+
+
